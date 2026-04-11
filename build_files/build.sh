@@ -19,6 +19,7 @@ INCLUDED_PACKAGES=(
 	ripgrep
 	# emacs
 	fira-code-fonts
+	libinput-devel
 )
 
 # remove excluded
