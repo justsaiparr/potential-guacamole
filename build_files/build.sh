@@ -26,8 +26,24 @@ INCLUDED_PACKAGES=(
 # dnf5 remove --quiet -y "${EXCLUDED_PACKAGES[@]}"
 
 # this installs a package from fedora repos
-curl -s https://download.zerotier.com/redhat/fc/zerotier.repo -o /etc/yum.repos.d/zerotier.repo
+echo "*** Setting up ZeroTier repository for Fedora..."
+
+# Import the official ZeroTier GPG key
+rpm --import https://download.zerotier.com/contact@zerotier.com.gpg
+
+# Create the repository configuration file manually and securely
+cat << 'EOF' > /etc/yum.repos.d/zerotier.repo
+[zerotier]
+name=ZeroTier, Inc. RPM Release Repository
+baseurl=https://download.zerotier.com/redhat/fc/$releasever
+enabled=1
+gpgcheck=1
+gpgkey=https://download.zerotier.com/contact@zerotier.com.gpg
+EOF
+
+echo "*** Installing ZeroTier package..."
 dnf5 install -y zerotier-one
+
 dnf5 install -y "${INCLUDED_PACKAGES[@]}"
 
 # CLEANUP
