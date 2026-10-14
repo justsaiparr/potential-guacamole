@@ -26,6 +26,8 @@ INCLUDED_PACKAGES=(
 # dnf5 remove --quiet -y "${EXCLUDED_PACKAGES[@]}"
 
 # this installs a package from fedora repos
+curl -s https://download.zerotier.com/redhat/fc/zerotier.repo -o /etc/yum.repos.d/zerotier.repo
+dnf5 install -y zerotier-one
 dnf5 install -y "${INCLUDED_PACKAGES[@]}"
 
 
@@ -46,3 +48,4 @@ rm -rf /var/lib/alternatives
 #### Example for enabling a System Unit File
 
 systemctl enable podman.socket
+systemctl enable zerotier-one.service
