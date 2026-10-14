@@ -30,7 +30,6 @@ curl -s https://download.zerotier.com/redhat/fc/zerotier.repo -o /etc/yum.repos.
 dnf5 install -y zerotier-one
 dnf5 install -y "${INCLUDED_PACKAGES[@]}"
 
-
 # CLEANUP
 # ----------------------------------------------------
 dnf5 autoremove && dnf5 clean all
