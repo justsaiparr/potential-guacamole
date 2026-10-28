@@ -57,8 +57,15 @@ unzip -q -o /tmp/cisco-ut/bundle.zip -d /tmp/cisco-ut
 tar xzf /tmp/cisco-ut/cisco-secure-client-linux64-5.1.16.194-predeploy-rpm-k9.tgz -C /tmp/cisco-ut
 # Import Cisco's GPG key so the RPMs verify properly
 rpm --import /tmp/cisco-ut/CiscoSystemsInc.pgp
-# Install the full predeploy set: dart, posture, iseposture, nvm, vpn, vpn-cli
-dnf5 install -y /tmp/cisco-ut/cisco-secure-client-*.rpm
+# Install the predeploy set. Note: cisco-secure-client-vpn (GUI) and
+# cisco-secure-client-vpn-cli (CLI) conflict with each other and are
+# mutually exclusive - install only the GUI variant.
+dnf5 install -y \
+    /tmp/cisco-ut/cisco-secure-client-dart-5.1.16.194-1.x86_64.rpm \
+    /tmp/cisco-ut/cisco-secure-client-iseposture-5.1.16.194-1.x86_64.rpm \
+    /tmp/cisco-ut/cisco-secure-client-nvm-5.1.16.194-1.x86_64.rpm \
+    /tmp/cisco-ut/cisco-secure-client-posture-5.1.16.194-1.x86_64.rpm \
+    /tmp/cisco-ut/cisco-secure-client-vpn-5.1.16.194-1.x86_64.rpm
 rm -rf /tmp/cisco-ut
 
 dnf5 install -y "${INCLUDED_PACKAGES[@]}"
