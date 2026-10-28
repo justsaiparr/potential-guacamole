@@ -45,12 +45,21 @@ echo "*** Installing ZeroTier package..."
 dnf5 install -y zerotier-one
 
 echo "*** Installing Cisco Secure Client..."
-# Standalone RPM (not from a repo) - download it, then install locally.
-# pkg_gpgcheck is disabled because the Cisco RPM is not signed with a key in our trust store.
-curl -fSL -o /tmp/cisco-secure-client.rpm \
-    "https://vpn.utexas.edu/CACHE/stc/3/binaries/cisco-secure-client-vpn-5.1.16.194-1.x86_64.rpm"
-dnf5 install -y --setopt=pkg_gpgcheck=0 /tmp/cisco-secure-client.rpm
-rm -f /tmp/cisco-secure-client.rpm
+# UT distributes the official Cisco Secure Client "predeploy" bundle via
+# ServiceNow (publicly accessible, no login required). The bundle contains
+# all the client RPMs plus Cisco's GPG key for signature verification.
+# unzip is only needed for extraction; the CLEANUP step below removes it.
+dnf5 install -y unzip
+rm -rf /tmp/cisco-ut && mkdir -p /tmp/cisco-ut
+curl -fSL -o /tmp/cisco-ut/bundle.zip \
+    "https://ut.service-now.com/sys_attachment.do?sys_id=1b9cd86687574750fc73326e0ebb3534"
+unzip -q -o /tmp/cisco-ut/bundle.zip -d /tmp/cisco-ut
+tar xzf /tmp/cisco-ut/cisco-secure-client-linux64-5.1.16.194-predeploy-rpm-k9.tgz -C /tmp/cisco-ut
+# Import Cisco's GPG key so the RPMs verify properly
+rpm --import /tmp/cisco-ut/CiscoSystemsInc.pgp
+# Install the full predeploy set: dart, posture, iseposture, nvm, vpn, vpn-cli
+dnf5 install -y /tmp/cisco-ut/cisco-secure-client-*.rpm
+rm -rf /tmp/cisco-ut
 
 dnf5 install -y "${INCLUDED_PACKAGES[@]}"
 
