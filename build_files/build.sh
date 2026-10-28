@@ -44,6 +44,14 @@ EOF
 echo "*** Installing ZeroTier package..."
 dnf5 install -y zerotier-one
 
+echo "*** Installing Cisco Secure Client..."
+# Standalone RPM (not from a repo) - download it, then install locally.
+# pkg_gpgcheck is disabled because the Cisco RPM is not signed with a key in our trust store.
+curl -fSL -o /tmp/cisco-secure-client.rpm \
+    "https://vpn.utexas.edu/CACHE/stc/3/binaries/cisco-secure-client-vpn-5.1.16.194-1.x86_64.rpm"
+dnf5 install -y --setopt=pkg_gpgcheck=0 /tmp/cisco-secure-client.rpm
+rm -f /tmp/cisco-secure-client.rpm
+
 dnf5 install -y "${INCLUDED_PACKAGES[@]}"
 
 # CLEANUP
